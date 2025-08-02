@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -52,9 +53,23 @@ class User extends Authenticatable
         return $this->hasMany(Warehouse::class, 'owner_id', 'id');
     }
 
+    // Warehouse access methods
+    public function warehouses(): BelongsToMany
+    {
+        return $this->belongsToMany(Warehouse::class, 'user_warehouses')
+            ->withTimestamps();
+    }
+
+
     public function getAccessibleWarehouses()
     {
-        return $this->ownedWarehouses()->get();
+        // Admin users can access all warehouses
+        if ($this->hasRole('admin')) {
+            return Warehouse::pluck('id')->toArray();
+        }
+
+        // Return warehouses the user has access to
+        return $this->warehouses()->pluck('warehouse_id')->toArray();
     }
 
     public function hasRole($role): bool
@@ -64,6 +79,28 @@ class User extends Authenticatable
 
     public function hasWarehouseAccess($warehouseId): bool
     {
-        return in_array($warehouseId, $this->getAccessibleWarehouses()->pluck('id')->toArray());
+//        // Admin users have access to all warehouses
+//        if ($this->hasRole('admin')) {
+//            return true;
+//        }
+//
+//        // Check if user has direct access to the warehouse
+//        return $this->warehouses()->where('warehouse_id', $warehouseId)->exists();
+
+        //minimize the above code
+        return in_array($warehouseId, $this->getAccessibleWarehouses());
+    }
+
+
+    public function giveWarehouseAccess(int $warehouseId): void
+    {
+        if (!$this->hasWarehouseAccess($warehouseId)) {
+            $this->warehouses()->attach($warehouseId);
+        }
+    }
+
+    public function revokeWarehouseAccess(int $warehouseId): void
+    {
+        $this->warehouses()->detach($warehouseId);
     }
 }

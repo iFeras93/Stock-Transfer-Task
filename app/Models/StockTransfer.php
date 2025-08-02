@@ -3,8 +3,13 @@
 namespace App\Models;
 
 use App\Enums\StockTransferStatus;
+use App\Observers\StockTransferObserver;
+use App\Services\StockTransferService;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
+#[ObservedBy([StockTransferObserver::class])]
 class StockTransfer extends Model
 {
     protected $fillable = [
