@@ -45,4 +45,24 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function ownedWarehouses()
+    {
+        return $this->hasMany(Warehouse::class, 'owner_id', 'id');
+    }
+
+    public function getAccessibleWarehouses()
+    {
+        return $this->ownedWarehouses()->get();
+    }
+
+    public function hasRole($role): bool
+    {
+        return $this->role === $role;
+    }
+
+    public function hasWarehouseAccess($warehouseId): bool
+    {
+        return in_array($warehouseId, $this->getAccessibleWarehouses()->pluck('id')->toArray());
+    }
 }
