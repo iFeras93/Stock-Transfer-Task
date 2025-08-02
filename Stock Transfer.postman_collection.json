@@ -1,0 +1,305 @@
+{
+	"info": {
+		"_postman_id": "a35b04aa-5925-4926-b625-2299b0e494af",
+		"name": "Stock Transfer",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "813592"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "admin@example.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "password",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseURL}}/{{apiPrefix}}/login",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"{{apiPrefix}}",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Stock Transfer",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"warehouse_from_id\": 1,\n    \"warehouse_to_id\": 2,\n    \"delivery_integration_id\": 1,\n    \"notes\": \"Monthly inventory transfer\",\n    \"products\": [\n        {\n            \"product_id\": 1,\n            \"quantity\": 10\n        },\n        {\n            \"product_id\": 2,\n            \"quantity\": 5\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/{{apiPrefix}}/stock_transfers/store",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"{{apiPrefix}}",
+						"stock_transfers",
+						"store"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change Transfer Status",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{tauth_oken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"status\": \"preparing\",\n    \"notes\": \"Ready for preparation\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/{{apiPrefix}}/stock_transfers/10/change_status",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"{{apiPrefix}}",
+						"stock_transfers",
+						"10",
+						"change_status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cancel or Return Transfer",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"action\": \"cancel\",\n    \"notes\": \"Inventory not available\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/{{apiPrefix}}/stock_transfers/10/cancel_or_return",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"{{apiPrefix}}",
+						"stock_transfers",
+						"10",
+						"cancel_or_return"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "statusFilter",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/{{apiPrefix}}/stock_transfers/statusFilter",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"{{apiPrefix}}",
+						"stock_transfers",
+						"statusFilter"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Stock Transfers",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/{{apiPrefix}}/stock_transfers/index?page=1&per_page=15&status=new",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"{{apiPrefix}}",
+						"stock_transfers",
+						"index"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "per_page",
+							"value": "15"
+						},
+						{
+							"key": "status",
+							"value": "new"
+						},
+						{
+							"key": "warehouse_from_id",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Transfer Details",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/{{apiPrefix}}/stock_transfers/10/info_details",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"{{apiPrefix}}",
+						"stock_transfers",
+						"10",
+						"info_details"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "apiPrefix",
+			"value": "api/v1",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
